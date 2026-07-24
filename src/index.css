@@ -13,121 +13,87 @@
 
 @layer components {
   .input {
-    @apply w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-sm
-           focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400
+    @apply w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white/60 backdrop-blur text-slate-800 text-sm
+           focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-400
            focus:bg-white transition-all;
+  }
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/60 shadow-lg shadow-purple-500/5;
+  }
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-white/10;
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent;
+  }
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1;
+  }
+  .btn-gradient {
+    @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:-translate-y-0.5 transition-all;
   }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-  transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
-    transform: scale(1.05);
-  }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); transform: scale(1); }
+  50% { box-shadow: 0 0 0 14px rgba(139, 92, 246, 0); transform: scale(1.05); }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes stepProgress {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out both;
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.animate-slide-in {
-  animation: slideIn 0.4s ease-out both;
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.animate-scale-in {
-  animation: scaleIn 0.3s ease-out both;
-}
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out both; }
+.animate-slide-in { animation: slideIn 0.4s ease-out both; }
+.animate-scale-in { animation: scaleIn 0.3s ease-out both; }
+.animate-pulse-glow { animation: pulseGlow 1.8s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-spin-slow { animation: spinSlow 8s linear infinite; }
 
-.animate-pulse-glow {
-  animation: pulseGlow 1.8s ease-in-out infinite;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
 }
 
 .shimmer-bg {
-  background: linear-gradient(
-    90deg,
-    rgba(241, 245, 249, 0.6) 25%,
-    rgba(226, 232, 240, 0.8) 50%,
-    rgba(241, 245, 249, 0.6) 75%
-  );
+  background: linear-gradient(90deg, rgba(241, 245, 249, 0.6) 25%, rgba(226, 232, 240, 0.8) 50%, rgba(241, 245, 249, 0.6) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

@@ -30,22 +30,20 @@ export default function ProductCard({
 }: Props) {
   return (
     <article
-      className={`group relative bg-white rounded-2xl border overflow-hidden shadow-sm transition-all duration-300 animate-[fadeIn_0.5s_ease-out_both] ${
+      className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border overflow-hidden shadow-sm transition-all duration-300 animate-[fadeIn_0.5s_ease-out_both] ${
         selected
-          ? 'border-blue-400 ring-2 ring-blue-400/30 shadow-lg shadow-blue-500/10'
-          : 'border-slate-200/80 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1'
+          ? 'border-purple-400 ring-2 ring-purple-400/30 shadow-lg shadow-purple-500/10'
+          : 'border-slate-200/80 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1'
       }`}
       style={{ animationDelay: `${index * 80}ms` }}
     >
-      {/* AI tag */}
       <div className="absolute top-3 left-3 z-10">
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-semibold shadow-md">
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-xs font-semibold shadow-md">
           <Sparkles className="w-3 h-3" />
           {product.aiTag}
         </span>
       </div>
 
-      {/* match score badge */}
       {matchScore != null && (
         <div className="absolute top-3 right-3 z-10">
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
@@ -54,7 +52,6 @@ export default function ProductCard({
         </div>
       )}
 
-      {/* image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
         <img
           src={product.image}
@@ -65,31 +62,21 @@ export default function ProductCard({
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
 
-      {/* body */}
       <div className="p-5">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-medium text-blue-600 uppercase tracking-wide">
+          <span className="text-xs font-medium text-purple-600 uppercase tracking-wide">
             {product.category}
           </span>
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            <span className="text-sm font-semibold text-slate-700">
-              {product.rating}
-            </span>
-            <span className="text-xs text-slate-400">
-              ({product.reviews.toLocaleString()})
-            </span>
+            <span className="text-sm font-semibold text-slate-700">{product.rating}</span>
+            <span className="text-xs text-slate-400">({product.reviews.toLocaleString()})</span>
           </div>
         </div>
 
-        <h3 className="font-bold text-slate-900 leading-snug mb-1">
-          {product.name}
-        </h3>
-        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 mb-3">
-          {product.description}
-        </p>
+        <h3 className="font-bold text-slate-900 leading-snug mb-1">{product.name}</h3>
+        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 mb-3">{product.description}</p>
 
-        {/* key features */}
         {product.features && product.features.length > 0 && (
           <ul className="flex flex-wrap gap-1.5 mb-4">
             {product.features.slice(0, 3).map((f) => (
@@ -104,13 +91,10 @@ export default function ProductCard({
           </ul>
         )}
 
-        {/* pros & cons */}
         {(pros?.length ?? 0) > 0 && (cons?.length ?? 0) > 0 && (
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div>
-              <p className="text-xs font-bold text-emerald-600 uppercase tracking-wide mb-1.5">
-                Pros
-              </p>
+              <p className="text-xs font-bold text-emerald-600 uppercase tracking-wide mb-1.5">Pros</p>
               <ul className="space-y-1">
                 {pros!.slice(0, 3).map((p, i) => (
                   <li key={i} className="flex items-start gap-1 text-xs text-slate-600 leading-snug">
@@ -121,9 +105,7 @@ export default function ProductCard({
               </ul>
             </div>
             <div>
-              <p className="text-xs font-bold text-rose-500 uppercase tracking-wide mb-1.5">
-                Cons
-              </p>
+              <p className="text-xs font-bold text-rose-500 uppercase tracking-wide mb-1.5">Cons</p>
               <ul className="space-y-1">
                 {cons!.slice(0, 3).map((c, i) => (
                   <li key={i} className="flex items-start gap-1 text-xs text-slate-600 leading-snug">
@@ -136,21 +118,15 @@ export default function ProductCard({
           </div>
         )}
 
-        {/* AI explanation */}
         {reason && (
-          <div className="flex gap-2.5 rounded-xl bg-blue-50/70 border border-blue-100 p-3.5 mb-4">
-            <Sparkles className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-            <p className="text-sm text-slate-600 leading-relaxed">
-              {reason}
-            </p>
+          <div className="flex gap-2.5 rounded-xl bg-gradient-to-r from-blue-50/70 to-purple-50/70 border border-purple-100 p-3.5 mb-4">
+            <Sparkles className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-slate-600 leading-relaxed">{reason}</p>
           </div>
         )}
 
-        {/* actions */}
         <div className="flex items-center justify-between gap-2">
-          <span className="text-2xl font-extrabold text-slate-900">
-            ${product.price}
-          </span>
+          <span className="text-2xl font-extrabold text-slate-900">${product.price}</span>
           <div className="flex items-center gap-2">
             {onToggleWishlist && (
               <button
@@ -170,7 +146,7 @@ export default function ProductCard({
                 onClick={onToggleCompare}
                 className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all ${
                   selected
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
+                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-md shadow-purple-500/30'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
@@ -179,7 +155,7 @@ export default function ProductCard({
               </button>
             )}
             {!selectable && (
-              <button className="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
+              <button className="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all">
                 View
               </button>
             )}

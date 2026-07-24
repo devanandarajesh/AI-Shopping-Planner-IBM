@@ -38,7 +38,7 @@ const rows: Row[] = [
   },
   {
     label: 'Category',
-    render: (r) => <span className="text-sm font-medium text-blue-600">{r.product.category}</span>,
+    render: (r) => <span className="text-sm font-medium text-purple-600">{r.product.category}</span>,
   },
   {
     label: 'Key Features',
@@ -82,8 +82,8 @@ const rows: Row[] = [
   {
     label: 'AI Recommendation',
     render: (r) => (
-      <div className="flex gap-2 rounded-lg bg-blue-50/70 border border-blue-100 p-3">
-        <Sparkles className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+      <div className="flex gap-2 rounded-lg bg-gradient-to-r from-blue-50/70 to-purple-50/70 border border-purple-100 p-3">
+        <Sparkles className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" />
         <p className="text-sm text-slate-600 leading-relaxed">{r.reason}</p>
       </div>
     ),
@@ -110,10 +110,9 @@ export default function CompareModal({ a, b, onClose }: Props) {
       aria-label="Compare products"
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl animate-scale-in"
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/60 animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* header */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white/90 backdrop-blur">
           <h3 className="font-bold text-slate-900 text-lg">Compare Products</h3>
           <button
@@ -125,9 +124,7 @@ export default function CompareModal({ a, b, onClose }: Props) {
           </button>
         </div>
 
-        {/* comparison table */}
         <div className="p-6">
-          {/* desktop table */}
           <div className="hidden sm:grid grid-cols-[140px_1fr_1fr] gap-x-4 gap-y-0">
             <div className="sticky left-0" />
             <ProductHeader r={a} />
@@ -144,7 +141,6 @@ export default function CompareModal({ a, b, onClose }: Props) {
             ))}
           </div>
 
-          {/* mobile stacked cards */}
           <div className="sm:hidden space-y-5">
             {[a, b].map((r) => (
               <div key={r.product.id} className="rounded-xl border border-slate-200 overflow-hidden">
@@ -152,9 +148,7 @@ export default function CompareModal({ a, b, onClose }: Props) {
                 <div className="divide-y divide-slate-100">
                   {rows.map((row) => (
                     <div key={row.label} className="px-4 py-3">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">
-                        {row.label}
-                      </p>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">{row.label}</p>
                       {row.render(r)}
                     </div>
                   ))}
@@ -171,16 +165,9 @@ export default function CompareModal({ a, b, onClose }: Props) {
 function ProductHeader({ r }: { r: RecommendationResult }) {
   return (
     <div className="flex items-center gap-3 pb-3">
-      <img
-        src={r.product.image}
-        alt={r.product.name}
-        className="w-14 h-14 rounded-lg object-cover shrink-0"
-        loading="lazy"
-      />
+      <img src={r.product.image} alt={r.product.name} className="w-14 h-14 rounded-lg object-cover shrink-0" loading="lazy" />
       <div className="min-w-0">
-        <p className="font-bold text-slate-900 text-sm leading-snug truncate">
-          {r.product.name}
-        </p>
+        <p className="font-bold text-slate-900 text-sm leading-snug truncate">{r.product.name}</p>
         <p className="text-xs text-slate-400">{r.product.category}</p>
       </div>
     </div>

@@ -6,6 +6,7 @@ import Products from '@/components/Products';
 import About from '@/components/About';
 import Footer from '@/components/Footer';
 import Dashboard from '@/components/Dashboard';
+import LoadingScreen from '@/components/LoadingScreen';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 
 export default function App() {
@@ -18,7 +19,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 antialiased scroll-smooth">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-purple-50/30 text-slate-900 antialiased scroll-smooth">
+      <LoadingScreen />
       <Navbar />
       <main>
         <Hero />

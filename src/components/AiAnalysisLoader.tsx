@@ -20,32 +20,24 @@ export default function AiAnalysisLoader({ onComplete, duration = 2200 }: Props)
     const stepDuration = duration / STEPS.length;
     const timers: ReturnType<typeof setTimeout>[] = [];
     STEPS.forEach((_, i) => {
-      timers.push(
-        setTimeout(() => setActiveStep(i), stepDuration * i),
-      );
+      timers.push(setTimeout(() => setActiveStep(i), stepDuration * i));
     });
     timers.push(setTimeout(() => onComplete?.(), duration));
     return () => timers.forEach(clearTimeout);
   }, [duration, onComplete]);
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-      {/* animated brain */}
+    <div className="flex flex-col items-center justify-center py-16 px-6 rounded-2xl glass animate-fade-in-up">
       <div className="relative mb-8">
-        <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-2xl animate-pulse" />
-        <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/40 animate-pulse-glow">
+        <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" />
+        <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-xl shadow-purple-500/40 animate-pulse-glow">
           <Brain className="w-10 h-10 text-white" strokeWidth={2} />
         </div>
       </div>
 
-      <h3 className="text-lg font-bold text-slate-900 mb-1">
-        AI is analyzing your request
-      </h3>
-      <p className="text-sm text-slate-500 mb-8">
-        This will only take a moment…
-      </p>
+      <h3 className="text-lg font-bold text-slate-900 mb-1">AI is analyzing your request</h3>
+      <p className="text-sm text-slate-500 mb-8">This will only take a moment…</p>
 
-      {/* steps */}
       <div className="w-full max-w-md space-y-1">
         {STEPS.map((step, i) => {
           const isDone = i < activeStep;
@@ -56,7 +48,7 @@ export default function AiAnalysisLoader({ onComplete, duration = 2200 }: Props)
               key={step.label}
               className={`flex items-center gap-3.5 rounded-xl px-4 py-3 transition-all duration-500 ${
                 isActive
-                  ? 'bg-blue-50 border border-blue-200 scale-[1.02]'
+                  ? 'bg-purple-50 border border-purple-200 scale-[1.02]'
                   : isDone
                     ? 'bg-emerald-50/50 border border-emerald-100'
                     : 'bg-slate-50 border border-slate-100 opacity-60'
@@ -67,7 +59,7 @@ export default function AiAnalysisLoader({ onComplete, duration = 2200 }: Props)
                   isDone
                     ? 'bg-emerald-500 text-white'
                     : isActive
-                      ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white'
+                      ? 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 text-white'
                       : 'bg-slate-200 text-slate-400'
                 }`}
               >
@@ -80,11 +72,7 @@ export default function AiAnalysisLoader({ onComplete, duration = 2200 }: Props)
               <div className="flex-1 min-w-0">
                 <p
                   className={`text-sm font-semibold transition-colors ${
-                    isDone
-                      ? 'text-emerald-700'
-                      : isActive
-                        ? 'text-slate-900'
-                        : 'text-slate-400'
+                    isDone ? 'text-emerald-700' : isActive ? 'text-slate-900' : 'text-slate-400'
                   }`}
                 >
                   {step.label}
@@ -92,18 +80,17 @@ export default function AiAnalysisLoader({ onComplete, duration = 2200 }: Props)
                 <p className="text-xs text-slate-400 truncate">{step.desc}</p>
               </div>
               {isActive && (
-                <div className="w-5 h-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin shrink-0" />
+                <div className="w-5 h-5 rounded-full border-2 border-purple-500 border-t-transparent animate-spin shrink-0" />
               )}
             </div>
           );
         })}
       </div>
 
-      {/* progress bar */}
       <div className="w-full max-w-md mt-6">
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${((activeStep + 1) / STEPS.length) * 100}%` }}
           />
         </div>

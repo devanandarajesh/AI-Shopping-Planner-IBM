@@ -20,20 +20,8 @@ export default function ShoppingSummaryCard({ summary }: Props) {
   const isOverBudget = estimatedSpending > totalBudget;
 
   const stats = [
-    {
-      icon: Wallet,
-      label: 'Total Budget',
-      value: `$${totalBudget}`,
-      color: 'text-blue-600',
-      bg: 'bg-blue-50',
-    },
-    {
-      icon: TrendingUp,
-      label: 'Estimated Spending',
-      value: `$${estimatedSpending}`,
-      color: 'text-cyan-600',
-      bg: 'bg-cyan-50',
-    },
+    { icon: Wallet, label: 'Total Budget', value: `$${totalBudget}`, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { icon: TrendingUp, label: 'Estimated Spending', value: `$${estimatedSpending}`, color: 'text-indigo-600', bg: 'bg-indigo-50' },
     {
       icon: PiggyBank,
       label: 'Remaining Budget',
@@ -41,19 +29,13 @@ export default function ShoppingSummaryCard({ summary }: Props) {
       color: isOverBudget ? 'text-rose-600' : 'text-emerald-600',
       bg: isOverBudget ? 'bg-rose-50' : 'bg-emerald-50',
     },
-    {
-      icon: Target,
-      label: 'AI Match',
-      value: `${averageMatch}%`,
-      color: 'text-indigo-600',
-      bg: 'bg-indigo-50',
-    },
+    { icon: Target, label: 'AI Match', value: `${averageMatch}%`, color: 'text-purple-600', bg: 'bg-purple-50' },
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7 animate-fade-in-up">
+    <div className="glass rounded-2xl p-6 sm:p-7 animate-fade-in-up">
       <div className="flex items-center gap-2.5 mb-5">
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/30">
+        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-purple-500/30">
           <BarChart3 className="w-5 h-5 text-white" />
         </div>
         <div>
@@ -62,15 +44,11 @@ export default function ShoppingSummaryCard({ summary }: Props) {
         </div>
       </div>
 
-      {/* stat grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
-            <div
-              key={s.label}
-              className="rounded-xl border border-slate-100 p-3.5 hover:shadow-sm transition-shadow"
-            >
+            <div key={s.label} className="rounded-xl border border-slate-100 p-3.5 hover:shadow-sm transition-shadow">
               <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mb-2`}>
                 <Icon className={`w-4 h-4 ${s.color}`} />
               </div>
@@ -81,7 +59,6 @@ export default function ShoppingSummaryCard({ summary }: Props) {
         })}
       </div>
 
-      {/* budget visualization */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-slate-700">Budget Breakdown</span>
@@ -91,14 +68,12 @@ export default function ShoppingSummaryCard({ summary }: Props) {
         </div>
         <div className="flex h-4 rounded-full overflow-hidden bg-slate-100 shadow-inner">
           <div
-            className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-700 ease-out flex items-center justify-center"
+            className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 transition-all duration-700 ease-out flex items-center justify-center"
             style={{ width: `${spentPct}%` }}
             title={`Spent: $${estimatedSpending}`}
           >
             {spentPct > 15 && (
-              <span className="text-[10px] font-bold text-white px-1 truncate">
-                {Math.round(spentPct)}%
-              </span>
+              <span className="text-[10px] font-bold text-white px-1 truncate">{Math.round(spentPct)}%</span>
             )}
           </div>
           <div
@@ -107,15 +82,13 @@ export default function ShoppingSummaryCard({ summary }: Props) {
             title={`Remaining: $${remainingBudget}`}
           >
             {remainingPct > 15 && (
-              <span className="text-[10px] font-bold text-emerald-600 px-1 truncate">
-                {Math.round(remainingPct)}%
-              </span>
+              <span className="text-[10px] font-bold text-emerald-600 px-1 truncate">{Math.round(remainingPct)}%</span>
             )}
           </div>
         </div>
         <div className="flex items-center gap-4 mt-2.5 text-xs">
           <span className="inline-flex items-center gap-1.5 text-slate-600">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600" />
             Spent (${estimatedSpending})
           </span>
           <span className="inline-flex items-center gap-1.5 text-slate-600">

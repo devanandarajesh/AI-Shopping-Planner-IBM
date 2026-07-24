@@ -51,37 +51,18 @@ export default function Dashboard({ history, onClearHistory }: Props) {
   const estimatedSavings = history.length * 42;
 
   const stats = [
-    {
-      icon: ClipboardList,
-      label: 'Total Shopping Plans',
-      value: planCount,
-      color: 'from-cyan-500 to-blue-600',
-    },
-    {
-      icon: Heart,
-      label: 'Wishlist Items',
-      value: wishlistCount,
-      color: 'from-rose-500 to-pink-600',
-    },
-    {
-      icon: Sparkles,
-      label: 'Recommended Products',
-      value: recommendedProducts,
-      color: 'from-amber-500 to-orange-600',
-    },
-    {
-      icon: PiggyBank,
-      label: 'Estimated Savings',
-      value: `$${estimatedSavings}`,
-      color: 'from-emerald-500 to-teal-600',
-    },
+    { icon: ClipboardList, label: 'Total Shopping Plans', value: planCount, color: 'from-blue-500 to-indigo-600' },
+    { icon: Heart, label: 'Wishlist Items', value: wishlistCount, color: 'from-rose-500 to-pink-600' },
+    { icon: Sparkles, label: 'Recommended Products', value: recommendedProducts, color: 'from-amber-500 to-orange-600' },
+    { icon: PiggyBank, label: 'Estimated Savings', value: `$${estimatedSavings}`, color: 'from-emerald-500 to-teal-600' },
   ];
 
   return (
-    <section id="dashboard" className="py-20 sm:py-28 bg-slate-50/60">
+    <section id="dashboard" className="py-20 sm:py-28 bg-gradient-to-b from-purple-50/30 to-white relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60rem] h-96 bg-gradient-to-b from-purple-100/30 to-transparent blur-3xl rounded-full -z-10" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wide mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold uppercase tracking-wide mb-4">
             <LayoutDashboard className="w-3.5 h-3.5" />
             Dashboard
           </div>
@@ -93,38 +74,30 @@ export default function Dashboard({ history, onClearHistory }: Props) {
           </p>
         </div>
 
-        {/* stat cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {stats.map((s, i) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.label}
-                className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 hover:shadow-lg hover:-translate-y-1 transition-all animate-fade-in-up"
+                className="glass rounded-2xl p-5 card-hover animate-fade-in-up"
                 style={{ animationDelay: `${i * 80}ms` }}
               >
-                <div
-                  className={`w-11 h-11 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-md mb-4`}
-                >
-                  <Icon className="w-5.5 h-5.5 text-white" />
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-md mb-4`}>
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
-                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-0.5">
-                  {s.value}
-                </p>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                  {s.label}
-                </p>
+                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-0.5">{s.value}</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">{s.label}</p>
               </div>
             );
           })}
         </div>
 
-        {/* recent searches */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7">
+        <div className="glass rounded-2xl p-6 sm:p-7">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center">
-                <History className="w-5 h-5 text-slate-600" />
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                <History className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h3 className="font-bold text-slate-900 leading-tight">Recent Searches</h3>
@@ -148,18 +121,16 @@ export default function Dashboard({ history, onClearHistory }: Props) {
                 <Clock className="w-6 h-6 text-slate-400" />
               </div>
               <p className="text-sm font-medium text-slate-500">No searches yet</p>
-              <p className="text-xs text-slate-400 mt-1">
-                Generate a recommendation to start building your history.
-              </p>
+              <p className="text-xs text-slate-400 mt-1">Generate a recommendation to start building your history.</p>
             </div>
           ) : (
             <div className="space-y-2.5">
               {history.map((h) => (
                 <div
                   key={h.id}
-                  className="flex items-center gap-3 rounded-xl border border-slate-100 p-3.5 hover:border-blue-200 hover:bg-blue-50/30 transition-all group"
+                  className="flex items-center gap-3 rounded-xl border border-slate-100 p-3.5 hover:border-purple-200 hover:bg-purple-50/30 transition-all group"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-sm">
                     <Sparkles className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -168,17 +139,13 @@ export default function Dashboard({ history, onClearHistory }: Props) {
                       {h.input.budget ? ` · ${h.input.budget}` : ''}
                       {h.input.preference ? ` · ${h.input.preference}` : ''}
                     </p>
-                    <p className="text-xs text-slate-400 truncate">
-                      {h.input.requirements || 'No specific requirements'}
-                    </p>
+                    <p className="text-xs text-slate-400 truncate">{h.input.requirements || 'No specific requirements'}</p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
                       {h.topMatch}% match
                     </span>
-                    <span className="text-xs text-slate-400 whitespace-nowrap">
-                      {timeAgo(h.timestamp)}
-                    </span>
+                    <span className="text-xs text-slate-400 whitespace-nowrap">{timeAgo(h.timestamp)}</span>
                   </div>
                 </div>
               ))}

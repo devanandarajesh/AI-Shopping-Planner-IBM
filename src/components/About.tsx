@@ -20,12 +20,13 @@ const features = [
 
 export default function About() {
   return (
-    <section id="about" className="py-20 sm:py-28 bg-slate-50/60 relative overflow-hidden">
-      <div className="absolute top-0 right-0 -z-10 w-96 h-96 bg-gradient-to-br from-cyan-200/30 to-blue-200/20 blur-3xl rounded-full" />
+    <section id="about" className="py-20 sm:py-28 bg-gradient-to-b from-white to-purple-50/40 relative overflow-hidden">
+      <div className="absolute top-0 right-0 -z-10 w-96 h-96 bg-gradient-to-br from-purple-200/30 to-blue-200/20 blur-3xl rounded-full" />
+      <div className="absolute bottom-0 left-0 -z-10 w-80 h-80 bg-gradient-to-tr from-blue-200/20 to-purple-200/20 blur-3xl rounded-full" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wide mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold uppercase tracking-wide mb-4">
               <GraduationCap className="w-3.5 h-3.5" />
               Internship Project
             </div>
@@ -33,10 +34,10 @@ export default function About() {
               An AI shopping assistant built to learn
             </h2>
             <p className="mt-5 text-slate-600 text-lg leading-relaxed">
-              AI Shopping Planner is an internship project that explores how
-              artificial intelligence can simplify everyday shopping decisions.
-              It recommends products based on your needs, budget, and
-              preferences — turning hours of research into a single click.
+              ShopWise AI is an internship project that explores how artificial
+              intelligence can simplify everyday shopping decisions. It
+              recommends products based on your needs, budget, and preferences
+              — turning hours of research into a single click.
             </p>
             <p className="mt-4 text-slate-600 leading-relaxed">
               This project is a front-end demonstration using dummy data and
@@ -62,14 +63,14 @@ export default function About() {
             <div className="mt-8 flex items-center gap-3">
               <a
                 href="#"
-                className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-blue-600 hover:border-blue-300 transition-colors"
+                className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-purple-600 hover:border-purple-300 hover:-translate-y-0.5 transition-all"
                 aria-label="GitHub"
               >
                 <Github className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-blue-600 hover:border-blue-300 transition-colors"
+                className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-purple-600 hover:border-purple-300 hover:-translate-y-0.5 transition-all"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-5 h-5" />
@@ -81,12 +82,12 @@ export default function About() {
             {features.map((f, i) => (
               <div
                 key={f.title}
-                className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all animate-[fadeIn_0.5s_ease-out_both] ${
+                className={`glass rounded-2xl p-6 card-hover animate-[fadeIn_0.5s_ease-out_both] ${
                   i === 2 ? 'sm:col-span-2' : ''
                 }`}
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/30 mb-4">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-purple-500/30 mb-4">
                   <f.icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-bold text-slate-900 mb-1.5">{f.title}</h3>
