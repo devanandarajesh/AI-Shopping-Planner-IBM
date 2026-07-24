@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Wand2,
-  Loader2,
   SlidersHorizontal,
   DollarSign,
   Heart,
   ListChecks,
   RotateCcw,
   Sparkles,
+  GitCompare,
+  ArrowRight,
 } from 'lucide-react';
 import { categories } from '@/data/products';
 import { getRecommendationService } from '@/services';
@@ -15,8 +16,15 @@ import type {
   BudgetRange,
   Preference,
   RecommendationResult,
+  ShoppingSummary,
 } from '@/services';
+import { budgetToMax } from '@/services';
 import ProductCard from './ProductCard';
+import AiAnalysisLoader from './AiAnalysisLoader';
+import ShoppingSummaryCard from './ShoppingSummaryCard';
+import CompareModal from './CompareModal';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
+import { useWishlist } from '@/hooks/useWishlist';
 
 const budgetOptions: BudgetRange[] = [
   'Under $50',
@@ -32,6 +40,30 @@ const preferenceOptions: Preference[] = [
   'Trending',
 ];
 
+const PLANS_KEY = 'ai_shopping_plan_count';
+
+function buildSummary(
+  results: RecommendationResult[],
+  budget: BudgetRange | '',
+): ShoppingSummary {
+  const totalBudget = budgetToMax(budget);
+  const estimatedSpending = results.reduce((sum, r) => sum + r.product.price, 0);
+  const remainingBudget = totalBudget - estimatedSpending;
+  const averageMatch = results.length > 0
+    ? Math.round(results.reduce((sum, r) => sum + r.matchScore, 0) / results.length)
+    : 0;
+  const estimatedSavings = Math.max(0, totalBudget - estimatedSpending);
+
+  return {
+    totalBudget,
+    estimatedSpending,
+    remainingBudget,
+    productCount: results.length,
+    averageMatch,
+    estimatedSavings,
+  };
+}
+
 export default function Planner() {
   const [category, setCategory] = useState('');
   const [budget, setBudget] = useState<BudgetRange | ''>('');
@@ -40,11 +72,16 @@ export default function Planner() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<RecommendationResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [compareIds, setCompareIds] = useState<number[]>([]);
 
-  const generate = async () => {
+  const { addEntry } = useSearchHistory();
+  const { has: inWishlist, toggle: toggleWishlist } = useWishlist();
+
+  const generate = useCallback(async () => {
     setLoading(true);
     setResults(null);
     setError(null);
+    setCompareIds([]);
     try {
       const service = getRecommendationService();
       const recs = await service.recommend({
@@ -54,12 +91,24 @@ export default function Planner() {
         requirements,
       });
       setResults(recs);
+      const topMatch = recs[0]?.matchScore ?? 0;
+      addEntry(
+        { category: category || undefined, budget, preference, requirements },
+        recs.length,
+        topMatch,
+      );
+      try {
+        const count = parseInt(localStorage.getItem(PLANS_KEY) || '0', 10) + 1;
+        localStorage.setItem(PLANS_KEY, String(count));
+      } catch {
+        /* ignore */
+      }
     } catch {
       setError('Something went wrong generating recommendations. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [category, budget, preference, requirements, addEntry]);
 
   const reset = () => {
     setCategory('');
@@ -68,7 +117,24 @@ export default function Planner() {
     setRequirements('');
     setResults(null);
     setError(null);
+    setCompareIds([]);
   };
+
+  const toggleCompare = (id: number) => {
+    setCompareIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 2) return [prev[1], id];
+      return [...prev, id];
+    });
+  };
+
+  const summary = results ? buildSummary(results, budget) : null;
+  const compareResults = results
+    ? compareIds
+        .map((id) => results.find((r) => r.product.id === id))
+        .filter((r): r is RecommendationResult => r != null)
+    : [];
+  const showCompare = compareResults.length === 2;
 
   return (
     <section id="planner" className="py-20 sm:py-28 bg-slate-50/60">
@@ -155,7 +221,7 @@ export default function Planner() {
                   >
                     {loading ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Wand2 className="w-5 h-5 animate-pulse" />
                         Analyzing…
                       </>
                     ) : (
@@ -178,77 +244,142 @@ export default function Planner() {
           </div>
 
           {/* results */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 space-y-6">
+            {/* empty state */}
             {!loading && !results && !error && (
-              <div className="flex flex-col items-center justify-center text-center py-24 px-6 rounded-2xl border-2 border-dashed border-slate-200 bg-white/50">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30 mb-5">
-                  <Wand2 className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-800">
-                  Your recommendations will appear here
-                </h3>
-                <p className="text-slate-500 mt-2 max-w-sm">
-                  Fill in the form and hit <span className="font-semibold text-blue-600">Generate Recommendation</span> to see AI-curated picks.
-                </p>
-              </div>
-            )}
-
-            {loading && (
-              <div className="grid sm:grid-cols-2 gap-6">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm animate-pulse"
-                  >
-                    <div className="aspect-[4/3] bg-slate-200" />
-                    <div className="p-5 space-y-3">
-                      <div className="h-3 w-20 bg-slate-200 rounded" />
-                      <div className="h-4 w-3/4 bg-slate-200 rounded" />
-                      <div className="h-3 w-full bg-slate-200 rounded" />
-                      <div className="h-6 w-16 bg-slate-200 rounded mt-2" />
-                    </div>
+              <div className="flex flex-col items-center justify-center text-center py-24 px-6 rounded-2xl border-2 border-dashed border-slate-200 bg-white/50 animate-fade-in-up">
+                <div className="relative mb-5">
+                  <div className="absolute inset-0 rounded-2xl bg-blue-500/20 blur-2xl animate-pulse" />
+                  <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/30 animate-float">
+                    <Wand2 className="w-10 h-10 text-white" />
                   </div>
-                ))}
+                </div>
+                <h3 className="text-xl font-bold text-slate-800">
+                  Ready to find your perfect products?
+                </h3>
+                <p className="text-slate-500 mt-2 max-w-sm leading-relaxed">
+                  Fill in the form and hit{' '}
+                  <span className="font-semibold text-blue-600">
+                    Generate Recommendation
+                  </span>{' '}
+                  to get AI-curated picks with match scores, pros &amp; cons, and
+                  personalized explanations.
+                </p>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-400">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-200">
+                    <Sparkles className="w-3 h-3 text-blue-500" /> Match scores
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-200">
+                    <GitCompare className="w-3 h-3 text-blue-500" /> Side-by-side compare
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-200">
+                    <DollarSign className="w-3 h-3 text-blue-500" /> Budget tracking
+                  </span>
+                </div>
               </div>
             )}
 
+            {/* AI loading */}
+            {loading && <AiAnalysisLoader duration={2200} />}
+
+            {/* error */}
             {error && !loading && (
               <div className="flex flex-col items-center justify-center text-center py-24 px-6 rounded-2xl border-2 border-dashed border-rose-200 bg-rose-50/50">
                 <p className="text-rose-600 font-medium">{error}</p>
               </div>
             )}
 
+            {/* results */}
             {results && !loading && !error && (
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-lg font-bold text-slate-900">
-                    Top {results.length} AI picks for you
-                  </h3>
-                  <span className="text-sm text-slate-500">
-                    Sorted by match score
-                  </span>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-6">
-                  {results.map((r, i) => (
-                    <div key={r.product.id} className="flex flex-col gap-3">
+              <>
+                {/* compare banner */}
+                {compareIds.length > 0 && (
+                  <div className="flex items-center justify-between rounded-xl bg-blue-50 border border-blue-200 px-4 py-3 animate-slide-in">
+                    <span className="text-sm font-medium text-blue-700">
+                      {compareIds.length === 2
+                        ? 'Ready! Click to compare your two selections.'
+                        : `Select ${2 - compareIds.length} more product to compare.`}
+                    </span>
+                    {showCompare && (
+                      <button
+                        onClick={() => {}}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
+                      >
+                        <GitCompare className="w-4 h-4" />
+                        Compare Now
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* shopping summary */}
+                {summary && <ShoppingSummaryCard summary={summary} />}
+
+                {/* recommendation cards */}
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-lg font-bold text-slate-900">
+                      Top {results.length} AI picks for you
+                    </h3>
+                    <span className="text-sm text-slate-500">
+                      Sorted by match score
+                    </span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    {results.map((r, i) => (
                       <ProductCard
+                        key={r.product.id}
                         product={{ ...r.product, matchScore: r.matchScore }}
                         index={i}
+                        pros={r.pros}
+                        cons={r.cons}
+                        reason={r.reason}
+                        matchScore={r.matchScore}
+                        selectable
+                        selected={compareIds.includes(r.product.id)}
+                        onToggleCompare={() => toggleCompare(r.product.id)}
+                        onToggleWishlist={() => toggleWishlist(r.product.id)}
+                        inWishlist={inWishlist(r.product.id)}
                       />
-                      <div className="flex gap-2.5 rounded-xl bg-blue-50/70 border border-blue-100 p-3.5 -mt-2">
-                        <Sparkles className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                        <p className="text-sm text-slate-600 leading-relaxed">
-                          {r.reason}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+
+                {/* compare CTA */}
+                {results.length >= 2 && (
+                  <div className="flex items-center justify-center pt-2">
+                    <button
+                      onClick={() => {
+                        if (compareIds.length === 2) {
+                          /* modal triggered below */
+                        } else {
+                          setCompareIds([results[0].product.id, results[1].product.id]);
+                        }
+                      }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:border-blue-300 hover:text-blue-600 hover:shadow-sm transition-all"
+                    >
+                      <GitCompare className="w-4 h-4" />
+                      {compareIds.length === 2
+                        ? 'Comparing top 2 products'
+                        : 'Compare top 2 products'}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
       </div>
+
+      {/* compare modal */}
+      {showCompare && (
+        <CompareModal
+          a={compareResults[0]}
+          b={compareResults[1]}
+          onClose={() => setCompareIds([])}
+        />
+      )}
     </section>
   );
 }

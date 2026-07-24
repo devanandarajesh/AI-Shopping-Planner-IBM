@@ -22,6 +22,25 @@ export interface RecommendationResult {
   product: Product;
   matchScore: number;
   reason: string;
+  pros: string[];
+  cons: string[];
+}
+
+export interface ShoppingSummary {
+  totalBudget: number;
+  estimatedSpending: number;
+  remainingBudget: number;
+  productCount: number;
+  averageMatch: number;
+  estimatedSavings: number;
+}
+
+export interface SearchHistoryEntry {
+  id: string;
+  timestamp: number;
+  input: PlannerInput;
+  resultCount: number;
+  topMatch: number;
 }
 
 export interface ProductSearchParams {
@@ -37,4 +56,19 @@ export interface ProductService {
 
 export interface RecommendationService {
   recommend(input: PlannerInput): Promise<RecommendationResult[]>;
+}
+
+export function budgetToMax(budget: BudgetRange | '' | undefined): number {
+  switch (budget) {
+    case 'Under $50':
+      return 50;
+    case '$50–$150':
+      return 150;
+    case '$150–$300':
+      return 300;
+    case '$300+':
+      return 500;
+    default:
+      return 500;
+  }
 }

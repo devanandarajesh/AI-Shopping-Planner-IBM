@@ -4,6 +4,8 @@ export interface ScoredProduct {
   product: Product;
   score: number;
   reasons: string[];
+  pros: string[];
+  cons: string[];
 }
 
 const ECO_KEYWORDS = ['eco', 'natural', 'recycl', 'rubber', 'cruelty', 'organic'];
@@ -47,6 +49,35 @@ function isEco(product: Product): boolean {
   return ECO_KEYWORDS.some((k) => text.includes(k));
 }
 
+function buildPros(product: Product, input: PlannerInput): string[] {
+  const pros: string[] = [];
+  if (product.rating >= 4.5) pros.push(`Excellent ${product.rating}★ rating`);
+  if (product.reviews > 1000)
+    pros.push(`Highly reviewed (${product.reviews.toLocaleString()} reviews)`);
+  if (product.features.length > 0)
+    pros.push(`${product.features.length} standout features including ${product.features[0]}`);
+  if (input.budget && product.price <= budgetRange(input.budget)[1] * 0.8)
+    pros.push(`Great value within your budget`);
+  if (isEco(product)) pros.push(`Eco-friendly materials`);
+  if (pros.length === 0) pros.push(`Solid overall choice in this category`);
+  return pros.slice(0, 4);
+}
+
+function buildCons(product: Product, input: PlannerInput): string[] {
+  const cons: string[] = [];
+  if (product.rating < 4.5) cons.push(`Rating could be higher (${product.rating}★)`);
+  if (product.reviews < 800)
+    cons.push(`Fewer reviews (${product.reviews.toLocaleString()})`);
+  if (input.budget) {
+    const [, max] = budgetRange(input.budget);
+    if (max !== Infinity && product.price > max * 0.85)
+      cons.push(`Near the top of your budget`);
+  }
+  if (product.price > 250) cons.push(`Premium price point`);
+  if (cons.length === 0) cons.push(`Limited availability data`);
+  return cons.slice(0, 3);
+}
+
 export function scoreProducts(
   input: PlannerInput,
   catalog: Product[],
@@ -65,7 +96,6 @@ export function scoreProducts(
       let score = 0;
       const reasons: string[] = [];
 
-      // Rating weight (0–30)
       const ratingScore = (product.rating / 5) * 30;
       score += ratingScore;
       if (product.rating >= 4.6) {
@@ -74,20 +104,17 @@ export function scoreProducts(
         reasons.push(`it's well rated at ${product.rating}★`);
       }
 
-      // Popularity weight (0–20)
       const popularityScore = Math.min(product.reviews / 5000, 1) * 20;
       score += popularityScore;
       if (product.reviews > 2000) {
         reasons.push(`it's backed by ${product.reviews.toLocaleString()} reviews`);
       }
 
-      // Budget fit weight (0–20)
       if (input.budget) {
         score += 20;
         reasons.push(`it fits your ${input.budget} budget at $${product.price}`);
       }
 
-      // Preference weight (0–20)
       if (preference === 'Top Rated') {
         score += (product.rating / 5) * 20;
       } else if (preference === 'Best Value') {
@@ -107,7 +134,6 @@ export function scoreProducts(
         score += Math.min(product.reviews / 5000, 1) * 20;
       }
 
-      // Requirements keyword match (0–10)
       const matched = tokenMatch(product, requirements);
       if (matched.length > 0) {
         score += Math.min(matched.length * 3, 10);
@@ -116,16 +142,23 @@ export function scoreProducts(
         );
       }
 
-      return { product, score, reasons };
+      return {
+        product,
+        score,
+        reasons,
+        pros: buildPros(product, input),
+        cons: buildCons(product, input),
+      };
     });
 
-  // Fallback: if filters wiped everything, score the whole catalog by rating
   if (scored.length === 0) {
     return catalog
       .map((product) => ({
         product,
         score: (product.rating / 5) * 50,
         reasons: [`it's a top-rated ${product.category.toLowerCase()} pick`],
+        pros: buildPros(product, input),
+        cons: buildCons(product, input),
       }))
       .sort((a, b) => b.score - a.score);
   }
