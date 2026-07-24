@@ -1,4 +1,4 @@
-import { Star, Sparkles, Check, Minus, GitCompare, Heart } from 'lucide-react';
+import { Star, Sparkles, Check, Minus, GitCompare, Heart, Lightbulb } from 'lucide-react';
 import type { Product } from '@/data/products';
 
 interface Props {
@@ -13,6 +13,7 @@ interface Props {
   onToggleCompare?: () => void;
   onToggleWishlist?: () => void;
   inWishlist?: boolean;
+  buyingTips?: string[];
 }
 
 export default function ProductCard({
@@ -27,6 +28,7 @@ export default function ProductCard({
   onToggleCompare,
   onToggleWishlist,
   inWishlist = false,
+  buyingTips,
 }: Props) {
   return (
     <article
@@ -122,6 +124,23 @@ export default function ProductCard({
           <div className="flex gap-2.5 rounded-xl bg-gradient-to-r from-blue-50/70 to-purple-50/70 border border-purple-100 p-3.5 mb-4">
             <Sparkles className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" />
             <p className="text-sm text-slate-600 leading-relaxed">{reason}</p>
+          </div>
+        )}
+
+        {buyingTips && buyingTips.length > 0 && (
+          <div className="rounded-xl bg-amber-50/70 border border-amber-100 p-3.5 mb-4">
+            <p className="flex items-center gap-1.5 text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">
+              <Lightbulb className="w-3.5 h-3.5" />
+              Buying Tips
+            </p>
+            <ul className="space-y-1.5">
+              {buyingTips.map((tip, i) => (
+                <li key={i} className="flex items-start gap-1.5 text-xs text-slate-600 leading-snug">
+                  <span className="w-1 h-1 rounded-full bg-amber-400 shrink-0 mt-1.5" />
+                  {tip}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

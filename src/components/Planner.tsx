@@ -217,6 +217,7 @@ export default function Planner() {
                         onToggleCompare={() => toggleCompare(r.product.id)}
                         onToggleWishlist={() => toggleWishlist(r.product.id)}
                         inWishlist={inWishlist(r.product.id)}
+                        buyingTips={r.buyingTips}
                       />
                     ))}
                   </div>

@@ -24,6 +24,7 @@ export interface RecommendationResult {
   reason: string;
   pros: string[];
   cons: string[];
+  buyingTips?: string[];
 }
 
 export interface ShoppingSummary {
